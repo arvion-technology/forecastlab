@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>ForecastLab — Holt-Winters, baselines and walk-forward backtesting</title>
+  <meta name="description" content="Time-series forecasting in the browser: additive and multiplicative Holt-Winters, baselines, walk-forward backtesting, error metrics and residual anomalies." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f1a'/><text x='16' y='22' font-family='sans-serif' font-size='16' font-weight='700' fill='%23f5c26b' text-anchor='middle'>A</text></svg>" />
+  <link rel="stylesheet" href="arvion.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <div class="grid-lines"></div>
+
+  <div class="app shell">
+    <aside class="sidebar">
+      <a class="brand" href="#forecast" style="padding:6px 8px 14px">
+        <span class="brand-mark">A</span>
+        <span>
+          <span class="brand-word">FORECASTLAB</span>
+          <span class="brand-sub" style="display:block">by Arvion</span>
+        </span>
+      </a>
+
+      <div class="nav-label">Explore</div>
+      <a class="nav-item active" href="#forecast" data-view="forecast"><span class="nav-dot"></span>Forecast</a>
+      <a class="nav-item" href="#backtest" data-view="backtest"><span class="nav-dot"></span>Backtest</a>
+      <a class="nav-item" href="#methods" data-view="methods"><span class="nav-dot"></span>Methods</a>
+
+      <div class="nav-label">Reference</div>
+      <a class="nav-item" href="https://github.com/arvion-technology/forecastlab#readme" target="_blank" rel="noopener"><span class="nav-dot"></span>Documentation ↗</a>
+      <a class="nav-item" href="https://github.com/arvion-technology/forecastlab/tree/main/src" target="_blank" rel="noopener"><span class="nav-dot"></span>Model source ↗</a>
+
+      <div style="flex:1"></div>
+      <div class="card flat pad-sm" style="margin-top:14px">
+        <div class="row" style="gap:8px">
+          <span class="badge green"><span class="dot pulse"></span>offline</span>
+          <span class="spacer"></span>
+          <span class="small muted mono">v1.0</span>
+        </div>
+        <p class="small muted" style="margin:8px 0 0">6 models · 3 datasets<br />No dependencies, no API key</p>
+      </div>
+    </aside>
+
+    <div style="min-width:0">
+      <header class="topbar">
+        <div class="eyebrow" style="margin:0">Time series</div>
+        <span class="spacer"></span>
+        <span class="badge gold">Holt-Winters</span>
+        <span class="badge blue">walk-forward backtest</span>
+        <span class="badge green"><span class="dot pulse"></span>deterministic data</span>
+        <a class="btn sm" href="https://github.com/arvion-technology/forecastlab" target="_blank" rel="noopener">GitHub ↗</a>
+        <div class="avatar" title="Demo workspace">AV</div>
+      </header>
+
+      <main class="main">
+        <!-- ============================================================ -->
+        <section data-view-panel="forecast">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Playground</div>
+              <h1>Forecast</h1>
+              <p class="lede">A seasonal model, a forecast band built from its own residual spread, and the baselines it has to beat. Pick a series and a horizon; every number is recomputed.</p>
+            </div>
+          </div>
+
+          <div class="card controls">
+            <div class="control">
+              <label for="dataset">Dataset</label>
+              <select class="select" id="dataset"></select>
+            </div>
+            <div class="control">
+              <label for="model">Model</label>
+              <select class="select" id="model"></select>
+            </div>
+            <div class="control grow">
+              <label for="horizon">Horizon <span class="mono" id="horizon-value">12</span></label>
+              <input type="range" id="horizon" min="1" max="24" step="1" value="12" />
+            </div>
+            <div class="control">
+              <label for="threshold">Anomaly z</label>
+              <select class="select" id="threshold">
+                <option value="2.5">2.5</option>
+                <option value="3" selected>3.0</option>
+                <option value="3.5">3.5</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid" style="grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);margin-bottom:16px;align-items:start">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="card-title" id="chart-title">Retail revenue</div>
+                  <div class="card-sub" id="chart-sub">–</div>
+                </div>
+                <span class="spacer"></span>
+                <div class="legend">
+                  <span><i class="lg-history"></i>history</span>
+                  <span><i class="lg-forecast"></i>forecast</span>
+                  <span><i class="lg-band"></i>95% band</span>
+                </div>
+              </div>
+              <div id="chart"></div>
+            </div>
+
+            <div class="col" style="gap:16px">
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">Backtest</div>
+                  <span class="spacer"></span>
+                  <span class="badge" id="rank-badge">–</span>
+                </div>
+                <div class="stat-grid" id="metric-cards"></div>
+                <div class="divider"></div>
+                <div class="small muted" id="metric-note">–</div>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">Next values</div>
+                  <span class="spacer"></span>
+                  <span class="small muted" id="band-note">–</span>
+                </div>
+                <div id="forecast-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card pad-sm" style="padding:0">
+              <div class="card-head" style="padding:14px 16px 0">
+                <div class="card-title">Model comparison</div>
+                <span class="spacer"></span>
+                <span class="small muted" id="comparison-sub">–</span>
+              </div>
+              <div id="comparison" style="margin-top:10px"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">Residual anomalies</div>
+                <span class="spacer"></span>
+                <span class="badge" id="anomaly-count">–</span>
+              </div>
+              <div id="anomalies"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <section data-view-panel="backtest" hidden>
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Measurement</div>
+              <h1>Backtest</h1>
+              <p class="lede">Walk-forward re-fits the model at every origin and scores only points it had not seen. One split can be lucky; dozens of origins are harder to fool.</p>
+            </div>
+          </div>
+
+          <div class="grid" style="grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);margin-bottom:16px;align-items:start">
+            <div class="card pad-sm" style="padding:0">
+              <div class="card-head" style="padding:14px 16px 0">
+                <div class="card-title">Error by model</div>
+                <span class="spacer"></span>
+                <span class="small muted" id="backtest-sub">–</span>
+              </div>
+              <div id="backtest-table" style="margin-top:10px"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">Error by step ahead</div>
+                <span class="spacer"></span>
+                <span class="small muted" id="step-sub">–</span>
+              </div>
+              <div id="step-bars"></div>
+            </div>
+          </div>
+
+          <div class="card pad-sm" style="padding:0">
+            <div class="card-head" style="padding:14px 16px 0">
+              <div>
+                <div class="card-title">Recent folds</div>
+                <div class="card-sub" id="folds-sub">–</div>
+              </div>
+            </div>
+            <div id="folds" style="margin-top:10px"></div>
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <section data-view-panel="methods" hidden>
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Reference</div>
+              <h1>Methods</h1>
+              <p class="lede">The equations, the fixed parameters and the parts this kit does not do. Every number on the other two screens comes from these functions.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <div class="card-head"><div class="card-title">Holt-Winters</div></div>
+              <pre class="code">level:     L(t) = α·(y(t) − S(t−m)) + (1−α)·(L(t−1) + T(t−1))
+trend:     T(t) = β·(L(t) − L(t−1)) + (1−β)·T(t−1)
+seasonal:  S(t) = γ·(y(t) − L(t)) + (1−γ)·S(t−m)
+
+forecast:  ŷ(t+h) = L(t) + h·T(t) + S(t+h−m)   (additive)
+           ŷ(t+h) = (L(t) + h·T(t)) · S(t+h−m) (multiplicative)</pre>
+              <div class="kv" id="hw-params"></div>
+              <p class="small muted" style="margin-top:12px">Multiplicative seasonality is only valid on strictly positive series, and the fit rejects the rest with an error rather than returning nonsense.</p>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Evaluation</div></div>
+              <pre class="code">walk-forward:
+  for each origin t in [minTrain, n − h]:
+    fit on y[0..t]
+    predict y[t+1 .. t+h]
+  score all folds together
+
+MAE   = mean(|y − ŷ|)
+RMSE  = sqrt(mean((y − ŷ)²))
+MAPE  = mean(|(y − ŷ) / y|)        (zero actuals skipped)
+bias  = mean(ŷ − y)                (positive = too high)</pre>
+              <p class="small muted" style="margin-top:12px">The newest points are the ones being forecast, so a fold's training window never contains its target. This is why the backtest is slower than a single train/test split — and why it is worth it.</p>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Datasets</div></div>
+              <div id="dataset-cards"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Limitations</div></div>
+              <ul class="method-list">
+                <li>Fixed smoothing parameters. No α/β/γ optimisation, so a well-tuned library will beat these defaults.</li>
+                <li>One seasonality per series. No holiday effects, no multiple season cycles.</li>
+                <li>Gaussian residual band. It widens as √h, which is a useful approximation, not a guarantee of coverage.</li>
+                <li>Anomalies are detected against the model's own residuals. A structural break is reported as a run of anomalies, not as one event.</li>
+                <li>Three generated datasets. They are deterministic and documented, not a benchmark.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="demo-banner">
+    <span class="brand-mark" style="width:20px;height:20px;font-size:10px;border-radius:6px">A</span>
+    <span>Arvion Labs</span>
+    <span class="sep"></span>
+    <a href="https://arvion-technology.github.io/labs/">All projects</a>
+    <span class="sep"></span>
+    <a href="https://github.com/arvion-technology/forecastlab" target="_blank" rel="noopener">source</a>
+  </div>
+
+  <script src="arvion.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
