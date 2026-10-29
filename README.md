@@ -1,8 +1,8 @@
 <div align="center">
-<img src="docs/demo.gif" alt="ForecastLab — seasonal forecast with band and backtest metrics" width="100%" />
+<img src="docs/demo.gif" alt="ForecastLab, seasonal forecast with band and backtest metrics" width="100%" />
 </div>
 
-<sub>Recorded from the live demo — <a href="docs/demo.mp4">MP4</a> · <a href="docs/screenshot.png">static frame</a></sub>
+<sub>Recorded from the live demo, <a href="docs/demo.mp4">MP4</a> · <a href="docs/screenshot.png">static frame</a></sub>
 
 # ForecastLab
 
@@ -32,7 +32,7 @@ exact forecasts and the screenshots stay reproducible.
 
 - **Fit** additive and multiplicative Holt-Winters with fixed, documented
   smoothing parameters.
-- **Compare** against seasonal naive, moving average, linear trend and naive —
+- **Compare** against seasonal naive, moving average, linear trend and naive.
   the honest question is always "did this beat the baseline?".
 - **Backtest** walk-forward, re-fitting at every origin and scoring only unseen
   points, with metrics per horizon step.
@@ -144,7 +144,7 @@ scores every fold. For the retail dataset at h=12 that is 588 folds. It is slowe
 than one split, and the fold count is displayed next to every metric so the
 sample size is visible.
 
-On that dataset the model comparison is not close — and this is the part worth
+On that dataset the model comparison is not close, and this is the part worth
 checking:
 
 | model | MAE | RMSE | MAPE |
@@ -166,7 +166,7 @@ Residuals are standardised against the previous `window` residuals, not against
 the whole series. A point is flagged when `|z| ≥ threshold` (default 3). The
 rolling baseline matters: a series with a noisy quarter would otherwise flag
 every point in it as anomalous. When a deterministic series has zero residual
-spread, any deviation is flagged rather than skipped — dividing by zero would
+spread, any deviation is flagged rather than skipped, dividing by zero would
 silently hide the one event worth seeing.
 
 ## Tests
@@ -177,17 +177,17 @@ npm test
 
 44 tests on `node:test`:
 
-- `series.test.js` — mean, sample std, differences, seasonal indices, OLS.
-- `holt-winters.test.js` — recovers a clean seasonal trend within tolerance,
+- `series.test.js`: mean, sample std, differences, seasonal indices, OLS.
+- `holt-winters.test.js`: recovers a clean seasonal trend within tolerance,
   first-season nulls, multiplicative positivity and factor scale, horizon
   length, parameter validation.
-- `metrics.test.js` — MAE/RMSE/bias by hand, MAPE zero handling.
-- `backtest.test.js` — no leakage (training window ends before the target),
+- `metrics.test.js`: MAE/RMSE/bias by hand, MAPE zero handling.
+- `backtest.test.js`: no leakage (training window ends before the target),
   naive predicts the previous value, multi-step fold count, per-model errors
   reported rather than thrown, hand-computed metrics.
-- `anomalies.test.js` — spike and drop detection, clean series, null fitted
+- `anomalies.test.js`: spike and drop detection, clean series, null fitted
   values, rolling-history requirement, band width.
-- `datasets.test.js` — determinism, season lengths, HW fits every dataset.
+- `datasets.test.js`: determinism, season lengths, HW fits every dataset.
 
 ```bash
 node scripts/serve-check.mjs    # demo bundle checks

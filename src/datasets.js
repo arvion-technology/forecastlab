@@ -2,8 +2,8 @@
 //
 // Generated, not downloaded: the same seed produces the same numbers on every
 // machine, so a test can assert a forecast value and a screenshot can show the
-// same chart after a year. The seasonal shapes are deliberate — one weekly
-// cycle, one annual cycle, one daily cycle — so the model picker has something
+// same chart after a year. The seasonal shapes are deliberate, one weekly
+// cycle, one annual cycle, one daily cycle, so the model picker has something
 // to disagree about.
 
 function mulberry32(seed) {
@@ -67,7 +67,7 @@ function buildRetailMonthly() {
     unit: "USD thousands",
     frequency: "monthly",
     seasonLength: 12,
-    description: "Seven years of monthly revenue with an annual cycle and a November–December peak.",
+    description: "Seven years of monthly revenue with an annual cycle and a November, December peak.",
     points,
   };
 }

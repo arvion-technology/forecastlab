@@ -2,7 +2,7 @@
 //
 // The implementation follows the classic recursion: a level, a trend and one
 // seasonal factor per position in the cycle, updated after every observation.
-// It is deliberately not auto-optimised — fixed smoothing parameters are easier
+// It is deliberately not auto-optimised, fixed smoothing parameters are easier
 // to test and to explain, and the demo exposes them in the methods panel. An
 // optimiser can sit on top of `fitHoltWinters` later without changing its shape.
 //

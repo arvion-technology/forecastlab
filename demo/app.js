@@ -1,4 +1,4 @@
-// ForecastLab demo — rendering and chart drawing.
+// ForecastLab demo, rendering and chart drawing.
 // Models, backtest, metrics and anomaly detection come from ../src/.
 import { DATASETS, datasetById, valuesOf } from "../src/datasets.js";
 import { HOLT_WINTERS_DEFAULTS } from "../src/holt-winters.js";
@@ -22,8 +22,8 @@ const state = {
 const comparisonCache = new Map();
 const analysisCache = new Map();
 
-const number = (value, digits = 1) => (value === null || value === undefined ? "—" : Number(value).toLocaleString("en-US", { maximumFractionDigits: digits }));
-const percent = (value) => (value === null || value === undefined ? "—" : `${(value * 100).toFixed(1)}%`);
+const number = (value, digits = 1) => (value === null || value === undefined ? ", " : Number(value).toLocaleString("en-US", { maximumFractionDigits: digits }));
+const percent = (value) => (value === null || value === undefined ? ", " : `${(value * 100).toFixed(1)}%`);
 
 function dateLabel(dataset, index) {
   const date = dataset.points[index]?.date || "";
@@ -196,7 +196,7 @@ function renderForecastList(analysis) {
   const rows = band.slice(0, 6).map((item, index) => ({
     date: dateLabel(dataset, dataset.points.length + index).slice(0, 10),
     value: `${number(item.value, 1)} ${dataset.unit}`,
-    band: `${number(item.low, 0)} – ${number(item.high, 0)}`,
+    band: `${number(item.low, 0)}, ${number(item.high, 0)}`,
   }));
   $("#forecast-list").replaceChildren(
     ...rows.map((row) =>
@@ -217,9 +217,9 @@ function renderComparison(analysis) {
     A.dataTable({
       columns: [
         { key: "model", label: "Model", render: (row) => el("span", { class: row.modelId === state.model ? "strong" : "", text: row.modelLabel }) },
-        { key: "mae", label: "MAE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.mae, 2) : "—" }) },
-        { key: "rmse", label: "RMSE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.rmse, 2) : "—" }) },
-        { key: "mape", label: "MAPE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? percent(row.metrics.mape) : "—" }) },
+        { key: "mae", label: "MAE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.mae, 2) : ", " }) },
+        { key: "rmse", label: "RMSE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.rmse, 2) : ", " }) },
+        { key: "mape", label: "MAPE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? percent(row.metrics.mape) : ", " }) },
         { key: "best", label: "", align: "right", render: (row) => (row.modelId === ranked[0]?.modelId ? el("span", { class: "badge green", text: "best" }) : null) },
       ],
       rows: ranked,
@@ -270,10 +270,10 @@ function renderBacktest() {
       columns: [
         { key: "rank", label: "#", align: "right", render: (row) => el("span", { class: "mono muted", text: String(ranked.indexOf(row) + 1) }) },
         { key: "label", label: "Model", render: (row) => el("span", { class: row.modelId === state.model ? "strong" : "", text: row.modelLabel }) },
-        { key: "mae", label: "MAE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.mae, 2) : "—" }) },
-        { key: "rmse", label: "RMSE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.rmse, 2) : "—" }) },
-        { key: "mape", label: "MAPE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? percent(row.metrics.mape) : "—" }) },
-        { key: "bias", label: "Bias", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.bias, 2) : "—" }) },
+        { key: "mae", label: "MAE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.mae, 2) : ", " }) },
+        { key: "rmse", label: "RMSE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.rmse, 2) : ", " }) },
+        { key: "mape", label: "MAPE", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? percent(row.metrics.mape) : ", " }) },
+        { key: "bias", label: "Bias", align: "right", render: (row) => el("span", { class: "mono", text: row.metrics ? number(row.metrics.bias, 2) : ", " }) },
       ],
       rows: ranked,
     }),

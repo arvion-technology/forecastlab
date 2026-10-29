@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>ForecastLab — Holt-Winters, baselines and walk-forward backtesting</title>
+  <title>ForecastLab | Holt-Winters, baselines and walk-forward backtesting</title>
   <meta name="description" content="Time-series forecasting in the browser: additive and multiplicative Holt-Winters, baselines, walk-forward backtesting, error metrics and residual anomalies." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 9 L91 91 H73 L50 52 L27 91 H9 Z' fill='%23f5c26b'/><circle cx='50' cy='31' r='6.6' fill='%230b0f1a'/><path d='M50 52 L67 90 H33 Z' fill='%230b0f1a'/></svg>" />
   <link rel="stylesheet" href="arvion.css" />
@@ -94,7 +94,7 @@
               <div class="card-head">
                 <div>
                   <div class="card-title" id="chart-title">Retail revenue</div>
-                  <div class="card-sub" id="chart-sub">–</div>
+                  <div class="card-sub" id="chart-sub">, </div>
                 </div>
                 <span class="spacer"></span>
                 <div class="legend">
@@ -111,17 +111,17 @@
                 <div class="card-head">
                   <div class="card-title">Backtest</div>
                   <span class="spacer"></span>
-                  <span class="badge" id="rank-badge">–</span>
+                  <span class="badge" id="rank-badge">, </span>
                 </div>
                 <div class="stat-grid" id="metric-cards"></div>
                 <div class="divider"></div>
-                <div class="small muted" id="metric-note">–</div>
+                <div class="small muted" id="metric-note">, </div>
               </div>
               <div class="card">
                 <div class="card-head">
                   <div class="card-title">Next values</div>
                   <span class="spacer"></span>
-                  <span class="small muted" id="band-note">–</span>
+                  <span class="small muted" id="band-note">, </span>
                 </div>
                 <div id="forecast-list"></div>
               </div>
@@ -133,7 +133,7 @@
               <div class="card-head" style="padding:14px 16px 0">
                 <div class="card-title">Model comparison</div>
                 <span class="spacer"></span>
-                <span class="small muted" id="comparison-sub">–</span>
+                <span class="small muted" id="comparison-sub">, </span>
               </div>
               <div id="comparison" style="margin-top:10px"></div>
             </div>
@@ -141,7 +141,7 @@
               <div class="card-head">
                 <div class="card-title">Residual anomalies</div>
                 <span class="spacer"></span>
-                <span class="badge" id="anomaly-count">–</span>
+                <span class="badge" id="anomaly-count">, </span>
               </div>
               <div id="anomalies"></div>
             </div>
@@ -163,7 +163,7 @@
               <div class="card-head" style="padding:14px 16px 0">
                 <div class="card-title">Error by model</div>
                 <span class="spacer"></span>
-                <span class="small muted" id="backtest-sub">–</span>
+                <span class="small muted" id="backtest-sub">, </span>
               </div>
               <div id="backtest-table" style="margin-top:10px"></div>
             </div>
@@ -171,7 +171,7 @@
               <div class="card-head">
                 <div class="card-title">Error by step ahead</div>
                 <span class="spacer"></span>
-                <span class="small muted" id="step-sub">–</span>
+                <span class="small muted" id="step-sub">, </span>
               </div>
               <div id="step-bars"></div>
             </div>
@@ -181,7 +181,7 @@
             <div class="card-head" style="padding:14px 16px 0">
               <div>
                 <div class="card-title">Recent folds</div>
-                <div class="card-sub" id="folds-sub">–</div>
+                <div class="card-sub" id="folds-sub">, </div>
               </div>
             </div>
             <div id="folds" style="margin-top:10px"></div>
@@ -222,7 +222,7 @@ MAE   = mean(|y − ŷ|)
 RMSE  = sqrt(mean((y − ŷ)²))
 MAPE  = mean(|(y − ŷ) / y|)        (zero actuals skipped)
 bias  = mean(ŷ − y)                (positive = too high)</pre>
-              <p class="small muted" style="margin-top:12px">The newest points are the ones being forecast, so a fold's training window never contains its target. This is why the backtest is slower than a single train/test split — and why it is worth it.</p>
+              <p class="small muted" style="margin-top:12px">The newest points are the ones being forecast, so a fold's training window never contains its target. This is why the backtest is slower than a single train/test split, and why it is worth it.</p>
             </div>
             <div class="card">
               <div class="card-head"><div class="card-title">Datasets</div></div>
